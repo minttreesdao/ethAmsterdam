@@ -10,9 +10,9 @@ const main = async () => {
   await txn.wait()
 
   // Mint another NFT for fun.
-  txn = await nftContract.minttree()
+  // txn = await nftContract.minttree()
   // Wait for it to be mined.
-  await txn.wait()
+  // await txn.wait()
 };
 
 const runMain = async () => {
