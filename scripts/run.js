@@ -5,10 +5,8 @@ const main = async () => {
   console.log("Contract deployed to:", nftContract.address);
 
   // Basic test - just to be sure we are able to mint as expected
-  
-  // Call the function.
-  let txn = await nftContract.minttree()
-  // Wait for it to be mined.
+  let overrides = { value: ethers.utils.parseEther("0.0001") }
+  let txn = await nftContract.minttree(1, overrides);
   await txn.wait()
 };
 

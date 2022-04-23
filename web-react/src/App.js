@@ -1,14 +1,7 @@
 import React, { useEffect, useState } from "react";
 import './styles/App.css';
-import twitterLogo from './assets/twitter-logo.svg';
 import { ethers } from "ethers";
 import minttreesNFT from "./utils/minttreesNFT.json";
-
-// Constants
-const TWITTER_HANDLE = '_buildspace';
-const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
-const OPENSEA_LINK = '';
-const TOTAL_MINT_COUNT = 50;
 
 // WARN: Everytime we deploy an updated contract, we need to update this
 //  AND update abi 
@@ -35,7 +28,7 @@ const App = () => {
 
     // user can have multi auth'd accounts; grab the first
     if (accounts.length !== 0) {
-      const account = accounts[0];
+      const account = accounts[0];   //////////////////////// FIXME: NOT USED?
     } else {
       console.log("No auth'd accounts found");
     }
@@ -102,6 +95,27 @@ const App = () => {
         await nftTxn.wait();
 
         console.log(`Mined, see transaction: https://rinkeby.etherscan.io/tx/${nftTxn.hash}`);
+
+        console.log("Going to order a trees now");
+        // Order Trees
+        let body = JSON.stringify({
+          test: 'true',
+          number: '1',
+          name: `${nftTxn.hash}`,
+        })
+        console.log(body);
+        
+        let r = fetch('https://public.ecologi.com/impact/trees', {
+          headers: { 
+            "Access-Control-Allow-Origin": "*",
+            "Content-Type": "application/json; charset=utf-8",
+            "Authorization": "Bearer c3fd6caa-b191-0ece-ca08-fc3bcaa4b398",
+            "Idempotency-Key": "1234567890"
+          },
+          method: 'POST',
+          body: body
+        });
+        console.log(r)
       } else {
         console.log("Ethereum object doesn't exist!");
       }
