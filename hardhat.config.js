@@ -1,6 +1,7 @@
 require("@nomiclabs/hardhat-waffle");
-require('dotenv').config();
 require("@nomiclabs/hardhat-etherscan");
+
+require('dotenv').config(); // Load env vars from process.env.VAR as defined in .env file
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -20,25 +21,36 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
  */
 module.exports = {
   solidity: "0.8.1",
-  networks: {
-    rinkeby: {
-      url: process.env.STAGING_ALCHEMY_KEY,
-      accounts: [process.env.PRIVATE_KEY],
-    },
-    mainnet: {
-      chainId: 1,
-      url: process.env.PROD_ALCHEMY_KEY,
-      accounts: [process.env.PRIVATE_KEY],
-    },
-    etherscan: {
-      // Your API key for Etherscan
-      // Obtain one at https://etherscan.io/
-      url: process.env.ETHERSCAN_URL,
-      apiKey: process.env.ETHERSCAN_KEY,
-    },
-    polygon_mumbai: {
-      url: process.env.MUMBAI_ALCHEMY_KEY,
-      accounts: [process.env.MUMBAI_PRIVATE_KEY],
-    }
-  },
+  networks: { },
 };
+
+if (process.env.STAGING_ALCHEMY_KEY) {
+  module.exports.networks['rinkeby'] = {
+        chainId: 1,
+        url: process.env.STAGING_ALCHEMY_KEY,
+        accounts: [process.env.PRIVATE_KEY],
+  };
+}
+
+if (process.env.PROD_ALCHEMY_KEY) {
+  module.exports.networks['mainnet'] = {
+        chainId: 1,
+        url: process.env.PROD_ALCHEMY_KEY,
+        accounts: [process.env.PRIVATE_KEY],
+  };
+}
+
+if (process.env.ETHERSCAN_URL & process.env.ETHERSCAN_KEY) {
+  module.exports.networks['etherscan'] = {
+        // Your API key for Etherscan - Obtain one at https://etherscan.io/
+        url: process.env.ETHERSCAN_URL,
+        apiKey: process.env.ETHERSCAN_KEY,
+  };
+}
+
+if (process.env.MUMBAI_ALCHEMY_KEY & process.env.MUMBAI_PRIVATE_KEY) {
+  module.exports.networks['polygon_mumbai'] = {
+        url: process.env.MUMBAI_ALCHEMY_KEY,
+        accounts: [process.env.MUMBAI_PRIVATE_KEY],
+  };
+}

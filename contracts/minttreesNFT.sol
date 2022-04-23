@@ -7,8 +7,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "hardhat/console.sol";
 
-// import the helper functions from the contract.
-import {Base64} from "./libraries/Base64.sol";
+import "@openzeppelin/contracts/utils/Base64.sol";
 
 contract minttreesNFT is ERC721URIStorage {
     using Counters for Counters.Counter;
@@ -57,28 +56,13 @@ contract minttreesNFT is ERC721URIStorage {
             abi.encodePacked("data:application/json;base64,", json)
         );
 
-        console.log("\n--------------------");
-        console.log(
-            string(
-                abi.encodePacked(
-                    "https://nftpreview.0xdev.codes/?code=",
-                    finalTokenUri
-                )
-            )
-        );
-        console.log("--------------------\n");
-
         _safeMint(msg.sender, newItemId);
 
-        // Update your URI!!!
+        // Update your URI!
         _setTokenURI(newItemId, finalTokenUri);
 
         _tokenIds.increment();
-        console.log(
-            "An NFT w/ ID %s has been minted to %s",
-            newItemId,
-            msg.sender
-        );
+        console.log("An NFT w/ ID %s has been minted to %s", newItemId, msg.sender);
 
         emit NewTreeMinted(msg.sender, newItemId);
     }

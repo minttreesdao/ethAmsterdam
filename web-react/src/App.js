@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import './styles/App.css';
 import twitterLogo from './assets/twitter-logo.svg';
 import { ethers } from "ethers";
-import myEpicNft from "./utils/MyEpicNFT.json";
+import minttreesNFT from "./utils/minttreesNFT.json";
 
 // Constants
 const TWITTER_HANDLE = '_buildspace';
@@ -10,8 +10,12 @@ const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
 const OPENSEA_LINK = '';
 const TOTAL_MINT_COUNT = 50;
 
-const CONTRACT_ADDRESS = "0x7Aad01b73930F3Ac218Bf14DEC4CE2Bd13078673"
+// WARN: Everytime we deploy an updated contract, we need to update this
+//  AND update abi 
+//  cp artifacts/contracts/minttreesNFT.sol/minttreesNFT.json web-react/src/utils/minttreesNFT.json
+const CONTRACT_ADDRESS = "0x213F7d1571386788E1c088E4E3F0DD5358778D6c";
 
+console.log(CONTRACT_ADDRESS);
 const App = () => {
 
   const [currentAccount, setCurrentAccount] = useState("");
@@ -46,7 +50,6 @@ const App = () => {
         alert("Get Metamask!");
         return;
       }
-
       const accounts = await ethereum.request({ method: "eth_requestAccounts" } );
 
       console.log("Connected", accounts[0]); 
@@ -68,10 +71,10 @@ const App = () => {
       if (ethereum) {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
-        const connectedContract = new ethers.Contract(CONTRACT_ADDRESS, myEpicNft.abi, signer);
+        const connectedContract = new ethers.Contract(CONTRACT_ADDRESS, minttreesNFT.abi, signer);
 
         // capture the event when our contract throws it; like webhooks
-        connectedContract.on("NewEpicNFTMinted", (from, tokenId) => {
+        connectedContract.on("NewTreeMinted", (from, tokenId) => {
           console.log(from, tokenId.toNumber())
           alert(`Hey! NFT minted and sent to your wallet; might be blank. Here's the link: https://testnets.opensea.io/assets/${CONTRACT_ADDRESS}/${tokenId.toNumber()}`);
         });
@@ -90,10 +93,10 @@ const App = () => {
       if (ethereum) {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
-        const connectedContract = new ethers.Contract(CONTRACT_ADDRESS, myEpicNft.abi, signer);
+        const connectedContract = new ethers.Contract(CONTRACT_ADDRESS, minttreesNFT.abi, signer);
 
         console.log("Going to pop wallet now to pay gas...");
-        let nftTxn = await connectedContract.makeAnEpicNFT();
+        let nftTxn = await connectedContract.minttree();
 
         console.log("Mining, please wait");
         await nftTxn.wait();
@@ -123,26 +126,17 @@ const App = () => {
     <div className="App">
       <div className="container">
         <div className="header-container">
-          <p className="header gradient-text">My NFT Collection</p>
+          <p className="header gradient-text">Mint Trees</p>
           <p className="sub-text">
-            Each unique. Each beautiful. Discover your NFT today.
+            Transact. Burn. Plant.
           </p>
           {currentAccount === "" ? (
             renderNotConnectedContainer()
           ) : (
             <button onClick={askContractToMintNft} className="cta-button connect-wallet-button">
-              Mint NFT
+              Mint a Tree
             </button>
           )}
-        </div>
-        <div className="footer-container">
-          <img alt="Twitter Logo" className="twitter-logo" src={twitterLogo} />
-          <a
-            className="footer-text"
-            href={TWITTER_LINK}
-            target="_blank"
-            rel="noreferrer"
-          >{`built on @${TWITTER_HANDLE}`}</a>
         </div>
       </div>
     </div>
