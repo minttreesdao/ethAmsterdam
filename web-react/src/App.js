@@ -2,6 +2,17 @@ import React, { useEffect, useState } from "react";
 import './styles/App.css';
 import { ethers } from "ethers";
 import minttreesNFT from "./utils/minttreesNFT.json";
+require('dotenv').config()
+
+/*
+const express = require('express');
+var app = express();
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  //res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+*/
 
 // WARN: Everytime we deploy an updated contract, we need to update this
 //  AND update abi 
@@ -87,7 +98,6 @@ const App = () => {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
         const connectedContract = new ethers.Contract(CONTRACT_ADDRESS, minttreesNFT.abi, signer);
-
         console.log("Going to pop wallet now to pay gas...");
         let nftTxn = await connectedContract.minttree();
 
@@ -97,24 +107,27 @@ const App = () => {
         console.log(`Mined, see transaction: https://rinkeby.etherscan.io/tx/${nftTxn.hash}`);
 
         console.log("Going to order a trees now");
+
         // Order Trees
         let body = JSON.stringify({
           test: 'true',
           number: '1',
-          name: `${nftTxn.hash}`,
-        })
+          name: nftTxn.hash
+        });
+        let headers = {
+          //"Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json; charset=utf-8",
+          "Authorization": "Bearer " + process.env.REACT_APP_BEARER_AUTH,
+          "Idempotency-Key": "1234567890"
+        };
         console.log(body);
         
-        let r = fetch('https://public.ecologi.com/impact/trees', {
-          headers: { 
-            "Access-Control-Allow-Origin": "*",
-            "Content-Type": "application/json; charset=utf-8",
-            "Authorization": "Bearer c3fd6caa-b191-0ece-ca08-fc3bcaa4b398",
-            "Idempotency-Key": "1234567890"
-          },
+        let r = fetch(process.env.REACT_APP_API_ENDPOINT, {
+          headers: headers, 
           method: 'POST',
           body: body
         });
+        console.log(headers)
         console.log(r)
       } else {
         console.log("Ethereum object doesn't exist!");
