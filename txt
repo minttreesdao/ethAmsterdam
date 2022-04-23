@@ -1,0 +1,5 @@
+STAGING_ALCHEMY_KEY=""
+PROD_ALCHEMY_KEY=""
+PRIVATE_KEY=""
+ETHERSCAN_URL="https://api-rinkeby.etherscan.io"
+ETHERSCAN_KEY=""
