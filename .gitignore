@@ -143,3 +143,6 @@ dist
 
 *.swp
 *.swo
+
+# macos environment
+.DS_Store
